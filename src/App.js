@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 import ReactTable from 'react-table';
 import "react-table/react-table.css";
+import Sound from 'react-sound'
+import ReactDOM from 'react-dom';
 
-
-class App extends Component {
-
-  render() {
-   
-    const eng2pin = [
+const eng2pin = [
     {
       "#" : 1,
       "eng" : "Do you speak English?",
@@ -86,6 +83,26 @@ class App extends Component {
     }
 
     ];
+
+
+class App extends Component {
+
+  handleButton(props){
+    console.log(eng2pin[props.value-1]["pin"]);
+    let gUrl = "https://translate.google.com/translate_tts?ie=UTF-8&q="+ eng2pin[props.value-1]["pin"] +"&tl=zh-CN&client=gtx";
+    console.log(gUrl);
+    ReactDOM.render(
+    <Sound
+      url= {gUrl}
+      playStatus={Sound.status.PLAYING}
+      playFromPosition={0 /* in milliseconds */}
+    />,null
+  );
+
+  }
+
+  render() {
+  
     
     return (
       <div className="App">
@@ -106,7 +123,14 @@ class App extends Component {
       }, {
         Header: 'PinYin',
         accessor: 'pin'
-      }]}
+      },
+      {
+        Header: 'Play',
+        accessor: '#',
+        Cell: ({value}) => (<button onClick={()=> this.handleButton({value})}>click!</button>)
+      }
+
+      ]}
          defaultPageSize={10}
          className="-striped -highlight"
         />
